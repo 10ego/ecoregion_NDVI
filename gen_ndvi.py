@@ -6,7 +6,11 @@ from dateutil.relativedelta import *
 
 import sqlite3
 
-ee.Initialize()
+try:
+	ee.Initialize()
+except EEException:
+	ee.Authenticate()
+	ee.Initialize()
 print("Initializing Earth Engine..")
 
 with open('ecoRegions.geojson') as f:
