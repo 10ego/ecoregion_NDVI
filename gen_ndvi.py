@@ -83,8 +83,6 @@ def write_to_db(ecoregions, start_date):
 iteration_ = input("Iteration starting position:")
 iteration_ = int(iteration_)
 ecoregions = ecoregions[iteration_:]
-conn = sqlite3.connect('ndvi.db')
-c = conn.cursor()
 #c.executemany("INSERT INTO monthly_ndvi (region_id, ndvi, date) VALUES (?, ?, ?)", write_to_db(ecoregions, start_date))
 counter = iteration_-1
 for region in ecoregions:
@@ -92,15 +90,17 @@ for region in ecoregions:
 	month=0
 	ndvis = feature_m(region['geometry'], start_date)
 	for ndvi in ndvis:
+		conn = sqlite3.connect('ndvi.db')
+		c = conn.cursor()
 		month+=1
 		print(f"Processing month {month} for region {counter}.")
 		try:
 			n = ndvi.getInfo()
 			c.execute("INSERT INTO monthly_ndvi (region_id, ndvi, date) VALUES (?, ?, ?)", (region['id'], n.get('NDVI'), n.get('time')['value']))
 			conn.commit()
+			conn.close()
 		except Exception as e:
 			print(f"Failed to process month {month} for region {counter}.")
 			with open('error.log', 'w+') as f:
 				f.write(f"[{counter}] {e.args}. Failed at month {month} for region {region['id']}\n")
 	print(f"Completed region {counter} out of total {len(ecoregions)}.")
-conn.close()
