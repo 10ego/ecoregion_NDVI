@@ -4,8 +4,8 @@ Google Earth Engine API serves a variety of satellite datasets including those f
 Here is an example of using the MODIS NDVI dataset, calculating the average NDVI value given a certain shapefile data in the form of geoJSON.
 
 ## Shapefile
-[The RESOLVE Ecoregions 2017 dataset](https://developers.google.com/earth-engine/datasets/catalog/RESOLVE_ECOREGIONS_2017?hl=en) was used to generate the shapefile.  It includes over 1100 regions in various forms including polygons, multipolygons, and multigeometry types.
-A sample of the dataset is included in this repository.
+[The RESOLVE Ecoregions 2017 dataset](https://developers.google.com/earth-engine/datasets/catalog/RESOLVE_ECOREGIONS_2017?hl=en) was used to generate the shapefile.  It includes over 1100 regions in various forms including polygons, multipolygons, and multigeometry types.  The geoJSON file is over 500mb and is lazily loaded into memory without optimization as I'm running this on a 32GB RAM machine.
+A sample of the dataset is included in this repository but the original geoJSON dataset is available through Earth Engine or the [RESOLVE dataset](https://ecoregions2017.appspot.com).
 
 ## Interacting with Google Earth Engine
 
