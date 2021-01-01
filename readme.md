@@ -19,7 +19,7 @@ The received data is cleaned up and stored in a SQLite3 database.
 
 ## Future plans
 
-The particular [MODIS dataset used] (https://developers.google.com/earth-engine/datasets/catalog/MODIS_MCD43A4_006_NDVI?hl=en) is generated from the composite data across 16-day cycle. The frequency of NDVI generated per month is arbitrarily determined and is an area of greater refinement.
+The particular [MODIS dataset used](https://developers.google.com/earth-engine/datasets/catalog/MODIS_MCD43A4_006_NDVI?hl=en) is generated from the composite data across 16-day cycle. The frequency of NDVI generated per month is arbitrarily determined and is an area of greater refinement.
 
 A simple database was chosen with the sole purpose of recording the data and further alignment work remains for integration with the XAlgo rule systems.
 The script writes to the database row by row.  Given the speed of Earth Engine's response time and the long running process, this had to become a design choice. The script utilizes a lazy form of respecting a "safe" practice of ensuring that the long-lived connection is still intact by opening and closing connections for every region but this had not been optimized due to negligible performance gain. 
