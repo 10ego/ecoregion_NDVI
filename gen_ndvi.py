@@ -3,7 +3,6 @@ import json
 import numpy as np
 from datetime import datetime
 from dateutil.relativedelta import *
-
 import sqlite3
 
 try:
@@ -86,7 +85,7 @@ def write_to_db(ecoregions, start_date):
 total_ = len(ecoregions)
 ecoregions = ecoregions[iteration_:]
 #c.executemany("INSERT INTO monthly_ndvi (region_id, ndvi, date) VALUES (?, ?, ?)", write_to_db(ecoregions, start_date))
-counter = iteration_-1
+counter = iteration_
 for region in ecoregions:
 	counter+=1
 	month=0
