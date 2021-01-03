@@ -13,6 +13,9 @@ except EEException:
 	ee.Initialize()
 print("Initializing Earth Engine..")
 
+iteration_ = input("Iteration starting position:")
+iteration_ = int(iteration_)
+
 with open('ecoRegions.geojson') as f:
 	print("Loading eco region shapefile..(this may take a few minutes)")
 	ecoregions = json.load(f)
@@ -80,8 +83,7 @@ def write_to_db(ecoregions, start_date):
 			yield (region['id'], n.get('NDVI'), n.get('time')['value'])	
 
 
-iteration_ = input("Iteration starting position:")
-iteration_ = int(iteration_)
+total_ = len(ecoregions)
 ecoregions = ecoregions[iteration_:]
 #c.executemany("INSERT INTO monthly_ndvi (region_id, ndvi, date) VALUES (?, ?, ?)", write_to_db(ecoregions, start_date))
 counter = iteration_-1
@@ -98,9 +100,11 @@ for region in ecoregions:
 			n = ndvi.getInfo()
 			c.execute("INSERT INTO monthly_ndvi (region_id, ndvi, date) VALUES (?, ?, ?)", (region['id'], n.get('NDVI'), n.get('time')['value']))
 			conn.commit()
+			with open('lastworked.txt','w+') as f:
+				f.write(f"month {month} for region id {region['id']} - {counter} of {total_}")
 			conn.close()
 		except Exception as e:
 			print(f"Failed to process month {month} for region {counter}.")
 			with open('error.log', 'w+') as f:
 				f.write(f"[{counter}] {e.args}. Failed at month {month} for region {region['id']}\n")
-	print(f"Completed region {counter} out of total {len(ecoregions)}.")
+	print(f"Completed region {counter} out of total {total_}.")
