@@ -7,6 +7,27 @@ Here is an example of using the MODIS NDVI dataset, calculating the average NDVI
 [The RESOLVE Ecoregions 2017 dataset](https://developers.google.com/earth-engine/datasets/catalog/RESOLVE_ECOREGIONS_2017?hl=en) was used to generate the shapefile.  It includes over 1100 regions in various forms including polygons, multipolygons, and multigeometry types.  The geoJSON file is over 500mb and is lazily loaded into memory without optimization as I'm running this on a 32GB RAM machine.
 A sample of the dataset is included in this repository but the original geoJSON dataset is available through Earth Engine or the [RESOLVE dataset](https://ecoregions2017.appspot.com).
 
+The following schema is expected per region:
+
+```
+{
+	"geometry": {
+		"coordinates":ARRAY,
+		"type":STRING,
+	}
+	"id": STRING,
+	# EXAMPLE (properties is not strictly required and may slightly change depending on shapefile's source)
+	"properties": { 
+		"biome_name": STRING,
+		"biome_num": INT,
+		"eco_name": STRING,
+		"eco_biome": STRING,
+		"realm": STRING
+		},
+	"type": STRING
+}
+```
+
 ## Interacting with Google Earth Engine
 
 To use the [Google Earth Engine](https://signup.earthengine.google.com/) platform, an authenticated Google account is required.  The API library is available in both JavaScript and Python (there is a lack of documentation for pythonbut the function syntax remains similar enough).
