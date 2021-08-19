@@ -1,22 +1,21 @@
 import ee
 import datetime
 from utils.geojsonParser import Parser
+import json
 
 class Engine:
     def __init__(self):
         try:
-            self.ee.Initialize()
-        except EEException:
-            self.ee.Authenticate()
-            self.ee.Initialize()
+            ee.Initialize()
+        except ee.ee_exception.EEException:
+            ee.Authenticate()
+            ee.Initialize()
         print("Earth Engine initialized")
 
     def load_geojson(self, filename):
         self.parsedGeo = Parser(filename)
         self.parsedGeo.extractCoordinates()
-        self.region = self.ee.FeatureCollection([
-                ee.Geometry(self.parsedGeo.coordinates)
-            ])
+        self.region = ee.Geometry.MultiPolygon(self.parsedGeo.coordinates)
     def satelliteDataType(self, imageCollection=None, dataType=None):
         ## Identify the Earth Engine Data Catalog
         ## imageCollection takes precedence over dataType definition
@@ -44,14 +43,24 @@ class Engine:
             init_date = ee.Date(i_datetime)
             end_date = ee.Date(e_datetime)
 
-            data = self.imageCollection.filterDate(init_date, end_date).mean().reduceRegion(
-                reducer = ee.Reducer.mean(),
-                geometry = self.region.geometry(),
-                scale = 1000,
-                maxPixels = 10000000,
-                bestEffort = True
-            )
-            data = data.combine(ee.Dictionary({"time":init_date}))
+            print("ImageCollection Reduction activating...")
+            data = self.imageCollection \
+                .filterDate(init_date, end_date) \
+                .filterBounds(self.region) \
+                .reduce(ee.Reducer.mean())
+            print("Reduction complete!")
+            output = data.toDictionary()
+            
+            # print(output.keys())
 
-            with open(f'data/{datetime.datetime.stfftime(i_datetime,'%Y-%b.json')}', 'w+') as f:
-                json.dump(f, data)
+            # data = ee.Dictionary(
+            #     {
+            #         "image":data,
+            #         "time":init_date
+            #     }
+            # )
+            fname = datetime.datetime.strftime(i_datetime,'%Y-%b')
+            print("Saving data")
+            with open(f"data/{fname}.json", 'w+') as f:
+                # json.dump(f, output.get('NDVI'))
+                f.write(str(output.get('NDVI')))
